@@ -24,7 +24,6 @@ export default function SearchBar({ onSubmit }: SearchBarProps) {
           validate={(values) => {
             const errors: { query?: string } = {};
             if (!values.query.trim()) {
-              errors.query = "Please enter your search query.";
                 toast.error("Please enter your search query.");
             }
             return errors;
