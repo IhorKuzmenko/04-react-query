@@ -21,7 +21,7 @@ function App() {
   const [page, setPage] = useState(1);
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
 
-const { data, isLoading, isError } = useQuery({
+const { data, isLoading, isError, isSuccess  } = useQuery({
     queryKey: ["movies", query, page],
     queryFn: () => fetchMovies(query, page),
     enabled: query !== "",
@@ -31,10 +31,10 @@ const { data, isLoading, isError } = useQuery({
   const totalPages = data?.total_pages ?? 0;
 
   useEffect(() => {
-    if (query && (data as MoviesHttpResponse)?.results.length === 0 && !isLoading) {
+    if (query && isSuccess &&(data as MoviesHttpResponse)?.results.length === 0) {
       toast.error("No movies found for your request.");
     }
-  }, [data, query, isLoading]);
+  }, [data, query, isSuccess ]);
 
   const handleSearch = (newQuery: string) => {
     setQuery(newQuery);
@@ -49,7 +49,7 @@ const { data, isLoading, isError } = useQuery({
     <div className={css.api}>
       <Toaster position="top-right" />
       <SearchBar onSubmit={handleSearch} />
-  {totalPages > 1 && (
+  {isSuccess && totalPages > 1 && (
         <ReactPaginate
           pageCount={totalPages}
           pageRangeDisplayed={5}
@@ -65,7 +65,7 @@ const { data, isLoading, isError } = useQuery({
 
       {isLoading && <Loader />}
       {isError && <ErrorMessage />}
-      {!isLoading && !isError && (
+      {isSuccess  && (
         <MovieGrid movies={(data as MoviesHttpResponse)?.results ?? []} onSelect={handleSelect} />
       )}
       {selectedMovie && <MovieModal movie={selectedMovie} onClose={handleCloseModal} />}

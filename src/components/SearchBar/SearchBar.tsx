@@ -24,12 +24,15 @@ export default function SearchBar({ onSubmit }: SearchBarProps) {
           validate={(values) => {
             const errors: { query?: string } = {};
             if (!values.query.trim()) {
-                toast.error("Please enter your search query.");
+              errors.query = "Please enter your search query.";
             }
             return errors;
           }}
           onSubmit={(values, { resetForm }) => {
-            if (!values.query.trim()) return; 
+            if (!values.query.trim()) {
+              toast.error("Please enter your search query.");
+              return;
+            }
             onSubmit(values.query.trim());
             resetForm();
           }}
